@@ -11,10 +11,14 @@ namespace ConsoleApp3
 		//TODO Artikli
 		//Nalik ovoj aplikaciji, napraviti da korisnik unosi artikle,
 		//artikal ce da ima sifru, naziv i cenu. Cena je decimal :) 
+
+		//TODO OOP -- Artikli
+		//Artikal je klasa koja sadrzi sifru, naziv i cenu   (moze i ulazna cena i marza)
+
 		static void Main(string[] args)
 		{
-			List<string> Imena = new List<string>();
-			List<string> TelBroj = new List<string>();
+			List<Osoba> Imenik = new List<Osoba>();
+
 			string izbor = "";			
 			while(izbor != "5")
 			{
@@ -25,19 +29,19 @@ namespace ConsoleApp3
 				switch(izbor)
 				{
 					case "1":
-						Unos(Imena, TelBroj);
+						Unos(Imenik);
 						break;
 					case "2":
-						for (int indeks = 0; indeks < Imena.Count; indeks++)
+						foreach (Osoba o in Imenik)
 						{
-							Console.WriteLine($"{indeks + 1}. {Imena[indeks]} -- {TelBroj[indeks]}");
+							Console.WriteLine($"{o.Ime} {o.Prezime} {o.TelBroj}");
 						}
 						break;
 					case "3":
-						Pretraga(Imena, TelBroj);
+						Pretraga(Imenik);
 						break;
 					case "4":
-						Brisanje(Imena, TelBroj);
+						Brisanje(Imenik);
 						break;
 					case "5":
 						Console.WriteLine("Vidimo se :)");
@@ -52,40 +56,66 @@ namespace ConsoleApp3
 			Console.ReadKey();
 		}
 
-		static void Brisanje (List<string> i, List<string> b)
+		static void Brisanje (List<Osoba> Osobe)
 		{
-			//TODO Treba brisanje po imenu. Moramo da pretrazimo
-			//listu sa imenima, uzmemo indeks (kao i u pretrazi)
-			//pa obrisemo i broj i ime iz lista :) 
-			
-			// string.IsNullOrEmpty(NekiString) -- vraca true ako
-			//je string u zagradama prazan
 
-			Console.Write("Unesite broj: ");
-			int ind = int.Parse(Console.ReadLine()) - 1;
-			i.RemoveAt(ind);
-			b.RemoveAt(ind);
+			Console.Write("Unesite ime ili prezime: ");
+			string pretraga = Console.ReadLine();
+
+			Osoba zaBrisanje = null;
+
+			foreach (Osoba o in Osobe)
+			{
+				if (o.Ime.ToLower().Contains(pretraga.ToLower()) || o.Prezime.ToLower().Contains(pretraga.ToLower()))
+				{
+					Console.WriteLine($"Da li zelite da obrisete: {o.Ime} {o.Prezime} {o.TelBroj}? (d/n)");
+					string unos = Console.ReadKey().KeyChar.ToString();
+					if (unos == "d")
+					{
+						zaBrisanje = o;
+						break;
+					}
+				}
+			}
+
+			Osobe.Remove(zaBrisanje);
 		}
 
-		static void Pretraga(List<string> i, List<string> b)
+		static void Pretraga(List<Osoba> Osobe)
 		{
-			Console.Write("Unesite ime: ");
+			Console.Write("Unesite ime ili prezime: ");
 			string pretraga = Console.ReadLine();
-			for (int indeks = 0; indeks < i.Count; indeks++)
+
+			foreach (Osoba o in Osobe)
+			{   
+				if (o.Ime.ToLower().Contains(pretraga.ToLower()) || o.Prezime.ToLower().Contains(pretraga.ToLower()))
+				{
+					Console.WriteLine($"{o.Ime} {o.Prezime} {o.TelBroj}");
+				}
+			}
+
+			/*for (int indeks = 0; indeks < i.Count; indeks++)
 			{
 				if (i[indeks].ToLower().Contains(pretraga.ToLower()))
 				{
 					Console.WriteLine($"{indeks + 1}. {i[indeks]} -- {b[indeks]}");
 				}
-			}
+			}*/
 		}
 
-		static void Unos(List<string> Imena, List<string> Brojevi)
+		static void Unos(List<Osoba> Osobe)
 		{
-			Console.Write("Unesite ime i prezime: ");
-			Imena.Add(Console.ReadLine());
+			Osoba o = new Osoba();
+
+			Console.Write("Unesite ime: ");
+			o.Ime = Console.ReadLine();
+			Console.Write("Unesite prezime: ");
+			o.Prezime = Console.ReadLine();
+
 			Console.Write("Unesite tel: ");
-			Brojevi.Add(Console.ReadLine());
+			o.TelBroj = Console.ReadLine();
+
+			Osobe.Add(o);
 		}
 
 		static void PrikaziMeni()
@@ -98,5 +128,21 @@ namespace ConsoleApp3
 			Console.WriteLine("---------------");
 			Console.Write("Unesite izbor: ");
 		}
+	}
+
+	class Osoba
+	{
+		public string Ime;
+		public string Prezime;
+		public string TelBroj;
+
+		public Osoba(string i, string p, string b)
+		{
+			Ime = i;
+			Prezime = p;
+			TelBroj = b;
+		}
+
+		public Osoba() { }
 	}
 }
